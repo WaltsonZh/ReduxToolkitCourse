@@ -1,30 +1,40 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { postAdded } from './postsSlice'
+import { addNewPost, postAdded } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
 
 export default function AddPostForm() {
   const dispatch = useDispatch()
+
   const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
+  const [body, setBody] = useState('')
   const [userId, setUserId] = useState('')
+  const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
   const users = useSelector(selectAllUsers)
 
   const onTitleChanged = (e) => setTitle(e.target.value)
-  const onContentChanged = (e) => setContent(e.target.value)
+  const onbodyChanged = (e) => setBody(e.target.value)
   const onAuthorChanged = (e) => setUserId(e.target.value)
 
-  const onSavePostClicked = () => {
-    if (title && content) {
-      dispatch(postAdded(title, content, userId))
+  const canSave = title && body && userId && addRequestStatus === 'idle'
 
-      setTitle('')
-      setContent('')
+  const onSavePostClicked = async () => {
+    if (canSave) {
+      try {
+        setAddRequestStatus('pending')
+        dispatch(addNewPost({ title, body, userId })).unwrap()
+
+        setTitle('')
+        setBody('')
+        setUserId('')
+      } catch (err) {
+        console.error('Failed to save the post', err)
+      } finally {
+        setAddRequestStatus('idle')
+      }
     }
   }
-
-  const canSave = title && content && userId
 
   const userOptions = users.map((user) => (
     <option key={user.id} value={user.id}>
@@ -43,8 +53,8 @@ export default function AddPostForm() {
           <option value=''></option>
           {userOptions}
         </select>
-        <label htmlFor='postContent'>Content:</label>
-        <textarea name='postContent' id='postContent' value={content} onChange={onContentChanged} />
+        <label htmlFor='postbody'>body:</label>
+        <textarea name='postbody' id='postbody' value={body} onChange={onbodyChanged} />
         <button type='button' onClick={onSavePostClicked} disabled={!canSave}>
           Save Post
         </button>
