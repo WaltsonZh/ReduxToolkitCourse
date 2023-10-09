@@ -28,7 +28,7 @@ export default function EditPostForm() {
 
   const onTitleChanged = (e) => setTitle(e.target.value)
   const onBodyChanged = (e) => setBody(e.target.value)
-  const onAuthorChanged = (e) => setUserId(e.target.value)
+  const onAuthorChanged = (e) => setUserId(Number(e.target.value))
 
   const canSave = title && body && userId && requestStatus === 'idle'
 
