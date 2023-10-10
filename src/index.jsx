@@ -3,11 +3,10 @@ import App from './App.jsx'
 import './index.css'
 import { store } from './app/store.js'
 import { Provider } from 'react-redux'
-import { fetchUsers } from './features/users/usersSlice.js'
-import { fetchPosts } from './features/posts/postsSlice.js'
+import { extendedApiSlice } from './features/posts/postsSlice.js'
 
-store.dispatch(fetchPosts())
-store.dispatch(fetchUsers())
+store.dispatch(extendedApiSlice.endpoints.getPosts.initiate())
+store.dispatch(extendedApiSlice.endpoints.getUsers.initiate())
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>

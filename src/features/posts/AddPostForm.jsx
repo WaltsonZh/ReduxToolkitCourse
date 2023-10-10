@@ -1,17 +1,16 @@
 import { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { addNewPost } from './postsSlice'
+import { useSelector } from 'react-redux'
+import { useAddNewPostMutation } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
 import { useNavigate } from 'react-router-dom/dist'
 
 export default function AddPostForm() {
-  const dispatch = useDispatch()
+  const [addNewPost, { isLoading }] = useAddNewPostMutation()
   const navigate = useNavigate()
 
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
   const [userId, setUserId] = useState('')
-  const [addRequestStatus, setAddRequestStatus] = useState('idle')
 
   const users = useSelector(selectAllUsers)
 
@@ -19,13 +18,12 @@ export default function AddPostForm() {
   const onbodyChanged = (e) => setBody(e.target.value)
   const onAuthorChanged = (e) => setUserId(e.target.value)
 
-  const canSave = title && body && userId && addRequestStatus === 'idle'
+  const canSave = title && body && userId && !isLoading
 
   const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus('pending')
-        dispatch(addNewPost({ title, body, userId })).unwrap()
+        await addNewPost({ title, body, userId }).unwrap()
 
         setTitle('')
         setBody('')
@@ -33,8 +31,6 @@ export default function AddPostForm() {
         navigate('/')
       } catch (err) {
         console.error('Failed to save the post', err)
-      } finally {
-        setAddRequestStatus('idle')
       }
     }
   }
