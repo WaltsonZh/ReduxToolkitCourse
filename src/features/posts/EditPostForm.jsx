@@ -32,10 +32,11 @@ export default function EditPostForm() {
 
   const canSave = title && body && userId && !isLoading
 
-  const onSavePostClicked = async () => {
+  const onSavePostClicked = async (e) => {
+    e.stopPropagation()
     if (canSave) {
       try {
-        await updatePost({ id: post.id, title, body, userId }).unwrap()
+        await updatePost({ id: post.id, title, body, userId, reactions: post.reactions }).unwrap()
 
         setTitle('')
         setBody('')
@@ -79,7 +80,7 @@ export default function EditPostForm() {
         </select>
         <label htmlFor='postBody'></label>
         <textarea name='postBody' id='postBody' value={body} onChange={onBodyChanged}></textarea>
-        <button type='button' onClick={onSavePostClicked} disabled={!canSave}>
+        <button type='submit' onClick={(e) => onSavePostClicked(e)} disabled={!canSave}>
           Save Post
         </button>
         <button className='deleteButton' type='button' onClick={onDeletePostClicked}>

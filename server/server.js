@@ -53,4 +53,34 @@ app.post('/posts', (req, res) => {
   }
 })
 
+app.put('/posts/:id', (req, res) => {
+  try {
+    filtered = posts.filter((post) => post.id !== Number(req.params.id))
+    posts = [...filtered, req.body]
+    return res.status(201).send(posts)
+  } catch (err) {
+    return res.status(500).send('500 Server error: ' + err.message)
+  }
+})
+
+app.delete('/posts/:id', (req, res) => {
+  try {
+    posts = posts.filter((post) => post.id !== req.body.id)
+    return res.sendStatus(204)
+  } catch (err) {
+    return res.status(500).send('500 Server error: ' + err.message)
+  }
+})
+
+app.patch('/posts/:id', (req, res) => {
+  try {
+    const target = posts.find((post) => post.id === Number(req.params.id))
+    const index = posts.indexOf(target)
+    posts[index] = { ...target, ...req.body }
+    return res.status(201).send(posts)
+  } catch (err) {
+    return res.status(500).send('500 Server error: ' + err.message)
+  }
+})
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
