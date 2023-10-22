@@ -1,5 +1,9 @@
-import TodoList from './features/todos/TodoList'
+import React from 'react';
 
-export default function App() {
-  return <TodoList />
+function App() {
+  return (
+    <h1>BRUH</h1>
+  )
 }
+
+export default App;
