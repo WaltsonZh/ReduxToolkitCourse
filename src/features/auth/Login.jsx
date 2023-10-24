@@ -44,7 +44,7 @@ export default function Login() {
       } else {
         setErrmsg('Login Failed')
       }
-      errRef.current.focus()
+      // errRef.current.focus()
     }
   }
 
